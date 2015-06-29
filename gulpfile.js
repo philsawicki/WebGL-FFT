@@ -1,3 +1,10 @@
+/**!
+ * @file Gulp build system.
+ * @author Philippe Sawicki (https://github.com/philsawicki)
+ * @copyright Copyright Philippe Sawicki 2015
+ * @license MIT
+ */
+
 'use strict';
 
 
@@ -105,14 +112,20 @@ var errorHandler = function (error) {
  */
 gulp.task('javascript:libraries', function () {
     var libraries = [
-        './src/js/libs/three.min.js', // Build r58
         './src/js/libs/OrbitControls.js'
     ];
 
     return gulp.src(libraries)
+        // Bind the custom error handler:
         .pipe(plumber({ errorHandler: errorHandler }))
+
+        // Rename the output stream:
         .pipe(concat('libraries.min.js'))
+
+        // Minify stream:
         .pipe(uglify())
+
+        // Output resulting streams to the proper destination folder:
         .pipe(gulp.dest(PATHS.dest.scripts));
 });
 
@@ -127,14 +140,21 @@ gulp.task('javascript:app', function () {
     });
 
     return b.bundle()
+        // Bind the custom error handler:
         .pipe(plumber({ errorHandler: errorHandler }))
+
+        // Rename the output stream:
         .pipe(source('main.min.js'))
         .pipe(buffer())
+
+        // Create sourceMaps for debugging:
         .pipe(sourceMaps.init({ loadMaps: true }))
-            // Add transformation tasks to the pipeline:
+            // Add transformation tasks to the pipeline (minifying output):
             .pipe(uglify())
             .on('error', gutil.log)
         .pipe(sourceMaps.write('./'))
+
+        // Output resulting streams to the proper destination folder:
         .pipe(gulp.dest(PATHS.dest.scripts));
 });
 
@@ -145,6 +165,7 @@ gulp.task('minify:html', function () {
     var timestamp = getTimestamp();
 
     return gulp.src(PATHS.src.markup)
+        // Bind the custom error handler:
         .pipe(plumber({ errorHandler: errorHandler }))
 
         // Add cache-busting to resources:
@@ -157,6 +178,8 @@ gulp.task('minify:html', function () {
             collapseWhitespace: true,
             removeComments: true
         }))
+
+        // Output resulting streams to the proper destination folder:
         .pipe(gulp.dest(PATHS.dest.markup));
 });
 
@@ -171,10 +194,19 @@ gulp.task('minify:css', function () {
     ];
 
     return gulp.src(cssFiles)
+        // Bind the custom error handler:
         .pipe(plumber({ errorHandler: errorHandler }))
+
+        // Rename the output stream:
         .pipe(concat('style.min.css'))
+
+        // Add vendor prefixes to CSS rules:
         .pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
+
+        // Minify CSS output:
         .pipe(minifyCSS({ compatibility: 'ie8' }))
+
+        // Output resulting streams to the proper destination folder:
         .pipe(gulp.dest(PATHS.dest.styles));
 });
 
@@ -183,6 +215,7 @@ gulp.task('minify:css', function () {
  */
 gulp.task('copy:images', function () {
     return gulp.src(PATHS.src.images)
+        // Bind the custom error handler:
         .pipe(plumber({ errorHandler: errorHandler }))
 
         // Optimize images:
@@ -194,6 +227,8 @@ gulp.task('copy:images', function () {
                 { removeUselessStrokeAndFill: false }
             ]
         }))
+
+        // Output resulting streams to the proper destination folder:
         .pipe(gulp.dest(PATHS.dest.images));
 });
 

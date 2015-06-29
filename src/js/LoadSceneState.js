@@ -189,8 +189,11 @@ var LoadSceneState = (function () {
 
         try {
             // Create App renderer:
-            _renderer = new THREE.WebGLRenderer({ antialias: false });
-            _renderer.setClearColor(0x444444);
+            _renderer = new THREE.WebGLRenderer({
+                antialias: false,
+                alpha: true
+            });
+            _renderer.setClearColor(0x000000, 0);
             //_renderer.setPixelRatio(window.devicePixelRatio);
             _renderer.setSize(window.innerWidth/_scaleRatio, window.innerHeight/_scaleRatio);
 

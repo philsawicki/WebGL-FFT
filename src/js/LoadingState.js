@@ -16,6 +16,7 @@
 var LoadingState = (function () {
     'use strict';
 
+
     /**
      * A reference to the Application.
      * 
@@ -47,7 +48,6 @@ var LoadingState = (function () {
      * @private
      */
     //var _soundcloudTrackURL = 'https://soundcloud.com/boundarysound/boundary-double-edged-sword';
-    //var _soundcloudTrackURL = 'https://soundcloud.com/aviciiofficial/avicii-levels-original-mix';
     var _soundcloudTrackURL = 'https://soundcloud.com/boundarysound/boundary-abidjan';
 
 
@@ -85,9 +85,8 @@ var LoadingState = (function () {
     var execute = function () {
         console.log('LoadingState::execute');
 
-        //_Application.setStatus('Loading track...');
 
-
+        // Load metadata about the Soundcloud track:
         var soundcloudURL = 'http://api.soundcloud.com/resolve.json?url=' + _soundcloudTrackURL + '&' + _clientParameter
         Utils.ajaxGet(soundcloudURL, function (response) {
             var trackInfo = JSON.parse(response);

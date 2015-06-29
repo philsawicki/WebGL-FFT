@@ -52,7 +52,8 @@ var PATHS = {
         scripts: ['./src/js/**/*.js'],
         styles:  ['./src/css/**/*.css'],
         markup:  ['./src/**/*.html'],
-        images:  ['./src/img/**/*.{png,gif,jpg,jpeg}']
+        images:  ['./src/img/**/*.{png,gif,jpg,jpeg}'],
+        shaders: ['./src/shaders/**/*.{vert,frag}']
     },
     dest: {
         scripts: path.join(__dirname, './dist/js'),
@@ -136,6 +137,7 @@ gulp.task('javascript:app', function () {
     // Set up the Browserify instance on a task basis
     var b = browserify({
         entries: ['./src/js/main.js'],
+        transform: ['brfs'],
         debug: true
     });
 
@@ -242,10 +244,10 @@ gulp.task('copy:images', function () {
  * Run the tasks when a file changes.
  */
 gulp.task('watch', function () {
-    gulp.watch(PATHS.src.scripts, ['javascript:libraries', 'javascript:app', 'minify:html']);
-    gulp.watch(PATHS.src.styles,  ['minify:css']);
-    gulp.watch(PATHS.src.markup,  ['minify:html']);
-    gulp.watch(PATHS.src.images,  ['copy:images']);
+    gulp.watch([PATHS.src.scripts, PATHS.src.shaders], ['javascript:libraries', 'javascript:app', 'minify:html']);
+    gulp.watch([PATHS.src.styles],                     ['minify:css']);
+    gulp.watch([PATHS.src.markup],                     ['minify:html']);
+    gulp.watch([PATHS.src.images],                     ['copy:images']);
 })
 
 /**

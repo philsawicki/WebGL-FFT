@@ -125,7 +125,8 @@ if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#d
 
 
 
-    <!-- Vertex Shader: -->
+    <!-- Vertex Shader (inlined in "main.min.js" application file): -->
+    <!--
     <script type="x-shader/x-vertex" id="vertexshader">
         uniform float offset;
         uniform float globalTime;
@@ -165,9 +166,11 @@ if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#d
             gl_Position = projectionMatrix * mvPosition;
         }
     </script>
+    -->
 
 
-    <!-- Fragment Shader: -->
+    <!-- Fragment Shader (inlined in "main.min.js" application file): -->
+    <!--
     <script type="x-shader/x-fragment" id="fragmentshader">
         uniform sampler2D hairMap;
         uniform sampler2D colorMap;
@@ -197,6 +200,7 @@ if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#d
             gl_FragColor = vec4(color*col.xyz*d*shadow, 1.1-offset);
         }
     </script>
+    -->
 
 
     <!-- Google Structured Data Snippets: -->
@@ -208,7 +212,9 @@ if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#d
     <script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     -->
 
+    <!-- Use CDN to leverage browser caching of assets: -->
     <script defer="defer" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/threejs/r69/three.min.js"></script>
+    <!-- Load libraries & application files: -->
     <script defer="defer" type="text/javascript" src="js/libraries.min.js?v="></script>
     <script defer="defer" type="text/javascript" src="js/main.min.js?v="></script>
 </body>

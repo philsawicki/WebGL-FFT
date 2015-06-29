@@ -16,6 +16,7 @@
 var Utils = (function () {
     'use strict';
 
+
     /**
      * Perform an AJAX HTTP GET request to the given URL.
      * 

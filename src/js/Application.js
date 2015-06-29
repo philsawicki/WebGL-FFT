@@ -338,7 +338,6 @@ var Application = (function (window, undefined) {
     var _initializeDebugControls = function () {
         // Setup Application Controls ViewModel:
         var applicationControls = {
-            trackTitle: 0,
             playSound: function () {
                 Application.playAudio();
             },
@@ -349,9 +348,6 @@ var Application = (function (window, undefined) {
 
         // Bind Application Controls to GUI:
         _gui = new dat.GUI({ autoPlace: false });
-        var trackTitleController = _gui.add(applicationControls, 'trackTitle', {
-            'Double-Edged Sword': 0
-        }).name('Track Title');
         _gui.add(applicationControls, 'playSound').name('Play Sound');
         _gui.add(applicationControls, 'trimStart', 0, 512, 1).onChange(function (value) {
             console.log('Trim Start', value);
@@ -360,16 +356,6 @@ var Application = (function (window, undefined) {
         _gui.add(applicationControls, 'trimEnd', 0, 512, 1).onChange(function (value) {
             console.log('Trim End', value);
             global.trimEnd = value;
-        });
-
-
-        // Called when the track to play changes:
-        trackTitleController.onChange(function (value) {
-            var soundCloudTrackLinks = [
-                'https://soundcloud.com/boundarysound/boundary-double-edged-sword'
-            ];
-
-            console.log('Now playing:', soundCloudTrackLinks[value]);
         });
 
 

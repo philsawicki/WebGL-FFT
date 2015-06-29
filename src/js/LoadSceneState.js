@@ -16,6 +16,7 @@
 var LoadSceneState = (function () {
     'use strict';
 
+
     /**
      * A reference to the Application.
      * 
@@ -40,10 +41,10 @@ var LoadSceneState = (function () {
     var _oldTime;
     var _shaderTime = 0;
     var _meshes = [];
-    var _overlay;
+    //var _overlay;
     var _texture;
     var _color;
-    var _vignette;
+    //var _vignette;
     var _mouse;
     var _gravity;
     var _mouseObj;
@@ -101,8 +102,6 @@ var LoadSceneState = (function () {
      */
     var execute = function () {
         console.log('LoadSceneState::execute');
-
-        //_Application.setStatus('Loading Scene...');
         
 
         _initScene();
@@ -147,13 +146,6 @@ var LoadSceneState = (function () {
 
 
         // Load texture for diffuse color:
-        // Patterns available:
-        // * patterns/19335527-Hair-background-Hair-style-pattern-Vector-illustration-Stock-Vector.jpg
-        // * patterns/fd1-vector-seamless-abstract-vector-pattern-repeat-geometric-triangle-mosaic-background-112162439.jpg
-        // * patterns/F1fBm-resize.jpg
-        // * patterns/yyy8Z-resize.jpg
-        // * patterns/1-resize.jpg
-        // * 11133-v4.jpg
         _color = THREE.ImageUtils.loadTexture('img/19335527-Hair-background-Hair-style-pattern-Vector-illustration-Stock-Vector-resize.jpg', undefined, _resourceLoadedCallback);
         _color.wrapS = _color.wrapT = THREE.RepeatWrapping;
 
@@ -167,21 +159,20 @@ var LoadSceneState = (function () {
         //_loader.load('suzanne.js', _meshLoaded);
         _meshLoaded();
 
+
         // Load texture for background:
-        _vignette = THREE.ImageUtils.loadTexture('img/VignetteWithDirt_alpha_sq.png', undefined, _resourceLoadedCallback);
-
-
+        //_vignette = THREE.ImageUtils.loadTexture('img/VignetteWithDirt_alpha_sq.png', undefined, _resourceLoadedCallback);
 
         // Set screen overlay using background texture as Sprite:
-        var overlayMaterial = new THREE.SpriteMaterial({
-            map: _vignette, 
-            useScreenCoordinates: true, 
-            opacity: 0.4
-        });
-        _overlay = new THREE.Sprite(overlayMaterial);
-        _overlay.scale.set(window.innerWidth/_scaleRatio, window.innerHeight/_scaleRatio, 1);
-        _overlay.position.set((window.innerWidth/_scaleRatio)/2, (window.innerHeight/_scaleRatio)/2 , 0);
-        _camera.add(_overlay);
+        //var overlayMaterial = new THREE.SpriteMaterial({
+        //    map: _vignette, 
+        //    useScreenCoordinates: true, 
+        //    opacity: 0.4
+        //});
+        //_overlay = new THREE.Sprite(overlayMaterial);
+        //_overlay.scale.set(window.innerWidth/_scaleRatio, window.innerHeight/_scaleRatio, 1);
+        //_overlay.position.set((window.innerWidth/_scaleRatio)/2, (window.innerHeight/_scaleRatio)/2 , 0);
+        //_camera.add(_overlay);
 
         _scene.add(_camera);
 
@@ -229,8 +220,6 @@ var LoadSceneState = (function () {
                 infoElement.style.display = 'block';
             }
         }
-
-        //_Application.changeState(PlayState);
     };
 
     /**
@@ -240,10 +229,8 @@ var LoadSceneState = (function () {
      * @private
      */
     var _resourceLoadedCallback = function () {
-        if (++_nbLoadedResources === 3) {
-            //_Application.setStatus('Scene Loaded');
-
-
+        if (++_nbLoadedResources === 2) {
+            // Play the audio track:
             _Application.playAudio();
 
             // All resources have been loaded, proceed to animate the scene:
@@ -267,10 +254,10 @@ var LoadSceneState = (function () {
         _camera.aspect = width / height;
         _camera.updateProjectionMatrix();
 
-        if (_overlay) {
-            _overlay.scale.set( w/_scaleRatio, height/_scaleRatio, 1 );
-            _overlay.position.set((width/_scaleRatio)/2, (height/_scaleRatio)/2 , 0);
-        }
+        //if (_overlay) {
+        //    _overlay.scale.set( w/_scaleRatio, height/_scaleRatio, 1 );
+        //    _overlay.position.set((width/_scaleRatio)/2, (height/_scaleRatio)/2 , 0);
+        //}
     };
 
     /**
@@ -282,7 +269,6 @@ var LoadSceneState = (function () {
      */
     var _onMouseMove = function (event) {
         // Prevent default click behavior, with IE polyfill:
-        //(event.preventDefault) ? event.preventDefault() : event.returnValue = false;
         Utils.preventDefaultEvent(event);
 
         _mouse.x =   (event.clientX / window.innerWidth)  * 2 - 1;
@@ -298,7 +284,6 @@ var LoadSceneState = (function () {
      */
     var _onTouchMove = function (event) {
         // Prevent default click behavior, with IE polyfill:
-        //(event.preventDefault) ? event.preventDefault() : event.returnValue = false;
         Utils.preventDefaultEvent(event);
 
         _mouse.x =   (event.touches[0].clientX / window.innerWidth)  * 2 - 1;
@@ -340,12 +325,17 @@ var LoadSceneState = (function () {
                 gravity:    { type: 'v3', value: _gravity },
             };
 
+            // Inline vertex & fragment shaders:
+            var fs = require('fs');
+            var vertexShader   = fs.readFileSync(__dirname + './../shaders/vertexShader.vert', 'utf8');
+            var fragmentShader = fs.readFileSync(__dirname + './../shaders/fragmentShader.frag', 'utf8');
+
             // Create material options for the mesh:
             var material = new THREE.ShaderMaterial({
                 uniforms:       uniforms,
                 attributes:     attributes,
-                vertexShader:   document.getElementById('vertexshader').textContent,
-                fragmentShader: document.getElementById('fragmentshader').textContent,
+                vertexShader:   vertexShader,   // document.getElementById('vertexshader').textContent,
+                fragmentShader: fragmentShader, // document.getElementById('fragmentshader').textContent,
                 transparent: true,
             });
 
@@ -380,9 +370,9 @@ var LoadSceneState = (function () {
             // b = hair strand darkness
             var fillStyle = [
                 255,
-                Math.floor( Utils.getRandomArbitrary(0, 255) ), // Math.floor(Math.random() * 255),
-                Math.floor( Utils.getRandomArbitrary(0, 255) ), // Math.floor(Math.random() * 255),
-                Math.floor( Utils.getRandomArbitrary(-12.0, 2.0) )  // 1
+                Math.floor( Utils.getRandomArbitrary(0, 255) ),
+                Math.floor( Utils.getRandomArbitrary(0, 255) ),
+                Math.floor( Utils.getRandomArbitrary(-12.0, 2.0) ) // 1
             ];
             //context.fillStyle = 'rgba(255,' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',1)';
             context.fillStyle = 'rgba(' + fillStyle.join(',') + ')';

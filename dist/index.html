@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>WebGL Audio Visualization | Philippe Sawicki</title><meta name="author" content="Philippe Sawicki"><meta name="description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Dosis:200|Arvo|Open+Sans:700,300,600,800,400"><link rel="stylesheet" type="text/css" href="css/style.min.css?v=2015-06-28-20-47-47"><meta property="og:title" content="Boundary - Abidjan | WebGL Audio Visualization"><meta property="og:site_name" content="Philippe Sawicki | Full Stack Developer and Digital Analyst"><meta property="og:description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><meta property="og:type" content="article"><meta property="og:image" content="http://philippesawicki.com/projects/WebGL-FFT/img/social/social-share-image.png"><meta property="article:author" content="https://www.facebook.com/philippe.sawicki"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@fyll_s"><meta name="twitter:creator" content="@fyll_s"><meta name="twitter:title" content="Boundary - Abidjan | WebGL Audio Visualization"><meta name="twitter:description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><meta name="twitter:image" content="http://philippesawicki.com/projects/WebGL-FFT/img/social/social-share-image.png"></head><body><script type="text/javascript">if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#debug') !== -1) {
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>WebGL Audio Visualization | Philippe Sawicki</title><meta name="author" content="Philippe Sawicki"><meta name="description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Dosis:200|Arvo|Open+Sans:700,300,600,800,400"><link rel="stylesheet" type="text/css" href="css/style.min.css?v=2015-06-28-22-31-25"><meta property="og:title" content="Boundary - Abidjan | WebGL Audio Visualization"><meta property="og:site_name" content="Philippe Sawicki | Full Stack Developer and Digital Analyst"><meta property="og:description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><meta property="og:type" content="article"><meta property="og:image" content="http://philippesawicki.com/projects/WebGL-FFT/img/social/social-share-image.png"><meta property="article:author" content="https://www.facebook.com/philippe.sawicki"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@fyll_s"><meta name="twitter:creator" content="@fyll_s"><meta name="twitter:title" content="Boundary - Abidjan | WebGL Audio Visualization"><meta name="twitter:description" content="WebGL Audio Visualization based on FFT beat detection of a Soundcloud track ('Abidjan' by Boundary)."><meta name="twitter:image" content="http://philippesawicki.com/projects/WebGL-FFT/img/social/social-share-image.png"></head><body><script type="text/javascript">if (window.location.hostname === 'localhost' || window.location.hash.indexOf('#debug') !== -1) {
     window.ga = function () {}
 } else {
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -11,66 +11,4 @@
         'siteSpeedSampleRate': 100
     });
     ga('send', 'pageview');
-}</script><div id="container"><div></div></div><div id="loader" class="preloader loading"><span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span></div><div id="trackInfo" class="hidden"><div id="trackCover"><a id="trackCoverLink" href="javascript:;" target="_blank"><img id="trackArtwork" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></a></div><div><p><a id="trackArtistLink" href="javascript:;" target="_blank"><span id="trackArtist"></span></a></p><p id="trackTitle"></p><p id="trackAlbum"></p></div></div><div id="playButton" class="hidden"><p><span id="launchExperienceBefore">&raquo;</span> <a id="launchExperience" href="#">Launch Experience</a> <span id="launchExperienceAfter">&laquo;</span></p></div><div id="GUIContainer"></div><ul id="links" class="links"><li><a id="githubLink" class="source" href="https://github.com/philsawicki/WebGL-FFT/" target="_blank" title="View on GitHub">GitHub</a></li><li><a id="aboutLink" class="design" href="javascript:;" target="_blank" title="About the Project">About</a></li></ul><canvas id="FFTContainer" width="1000" height="325"></canvas><div id="aboutModal" class="about hidden"><div><a id="aboutModalClose" href="javascript:;" title="Close" class="close" aria-label="Close">&times;</a><h1>About the Project</h1><p>This project uses beat-detection from a Soundcloud audio track to interact with 3D objects using WebGL, JavaScript and the HTML5 Audio API.</p><p>Many thanks to <a href="http://noboundary.ca" target="_blank" title="Boundary"><strong>Boundary</strong></a> for allowing his <em>Abidjan</em> composition to be used in this project.</p></div></div><script type="x-shader/x-vertex" id="vertexshader">uniform float offset;
-        uniform float globalTime;
-        uniform vec3 gravity;
-
-        varying vec2 vUv;
-        varying vec3 vNormal;
-
-        const float spacing = 12.0*1.5;
-
-        void main () {
-            vec3 displacement   = vec3(0.0, 0.0, 0.0);
-            vec3 forceDirection = vec3(0.0, 0.0, 0.0);
-
-            // "Wind"
-            forceDirection.x = sin(globalTime     + position.x*0.05) * 0.2;
-            forceDirection.y = cos(globalTime*0.7 + position.y*0.04) * 0.2;
-            forceDirection.z = sin(globalTime*0.7 + position.y*0.04) * 0.2;
-
-            // "Gravity"
-            displacement = gravity + forceDirection;
-
-            float displacementFactor = pow(offset, 3.0);
-
-            vec3 aNormal = normal;
-            aNormal.xyz += displacement*displacementFactor;
-
-            // Move outwards depending on offset(layer) and add normal+force+gravity
-            vec3 animated = vec3(position.x, position.y, position.z) + normalize(aNormal)*offset*spacing;
-
-            vNormal = normalize(normal*aNormal);
-
-            vUv = uv*20.0;
-
-            vec4 mvPosition = modelViewMatrix * vec4(animated, 1.0);
-
-            gl_Position = projectionMatrix * mvPosition;
-        }</script><script type="x-shader/x-fragment" id="fragmentshader">uniform sampler2D hairMap;
-        uniform sampler2D colorMap;
-        uniform vec3 color;
-        uniform float offset;
-
-        varying vec3 vNormal;
-
-        varying vec2 vUv;
-
-        void main () {
-            vec4 hairColor = texture2D(hairMap, vec2(vUv.s, vUv.t));
-            vec4 col = texture2D(colorMap, vec2(vUv.s*0.2, vUv.t*0.2));
-
-            // Discard no hairs + above the max length
-            if (hairColor.a <= 0.0 || hairColor.g < offset) {
-                discard;
-            }
-
-            // Darker towards bottom of the hair
-            float shadow = mix(0.0, hairColor.b*1.2, offset);
-
-            // Light
-            vec3 light = vec3(0.1, 1.0, 0.3);
-            float d = pow(max(0.25, dot(vNormal.xyz, light))*2.75, 1.4) * 5.5;
-
-            gl_FragColor = vec4(color*col.xyz*d*shadow, 1.1-offset);
-        }</script><script type="application/ld+json">[{"@context":"http://schema.org","@type":"Person","name":"Philippe Sawicki","jobTitle":"Full Stack Developer","url":"http://philippesawicki.com","sameAs":["https://facebook.com/philippe.sawicki","https://twitter.com/fyll_s","https://plus.google.com/+PhilippeSawicki","https://linkedin.com/in/philippesawicki"]},{"@context":"http://schema.org","@type":"WebSite","name":"Philippe Sawicki","url":"http://philippesawicki.com/projects/WebGL-FFT/"}]</script><script defer="defer" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/threejs/r69/three.min.js"></script><script defer="defer" type="text/javascript" src="js/libraries.min.js?v=2015-06-28-20-47-47"></script><script defer="defer" type="text/javascript" src="js/main.min.js?v=2015-06-28-20-47-47"></script></body></html>
+}</script><div id="container"><div></div></div><div id="loader" class="preloader loading"><span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span> <span class="slice"></span></div><div id="trackInfo" class="hidden"><div id="trackCover"><a id="trackCoverLink" href="javascript:;" target="_blank"><img id="trackArtwork" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></a></div><div><p><a id="trackArtistLink" href="javascript:;" target="_blank"><span id="trackArtist"></span></a></p><p id="trackTitle"></p><p id="trackAlbum"></p></div></div><div id="playButton" class="hidden"><p><span id="launchExperienceBefore">&raquo;</span> <a id="launchExperience" href="#">Launch Experience</a> <span id="launchExperienceAfter">&laquo;</span></p></div><div id="GUIContainer"></div><ul id="links" class="links"><li><a id="githubLink" class="source" href="https://github.com/philsawicki/WebGL-FFT/" target="_blank" title="View on GitHub">GitHub</a></li><li><a id="aboutLink" class="design" href="javascript:;" target="_blank" title="About the Project">About</a></li></ul><canvas id="FFTContainer" width="1000" height="325"></canvas><div id="aboutModal" class="about hidden"><div><a id="aboutModalClose" href="javascript:;" title="Close" class="close" aria-label="Close">&times;</a><h1>About the Project</h1><p>This project uses beat-detection from a Soundcloud audio track to interact with 3D objects using WebGL, JavaScript and the HTML5 Audio API.</p><p>Many thanks to <a href="http://noboundary.ca" target="_blank" title="Boundary"><strong>Boundary</strong></a> for allowing his <em>Abidjan</em> composition to be used in this project.</p></div></div><script type="application/ld+json">[{"@context":"http://schema.org","@type":"Person","name":"Philippe Sawicki","jobTitle":"Full Stack Developer","url":"http://philippesawicki.com","sameAs":["https://facebook.com/philippe.sawicki","https://twitter.com/fyll_s","https://plus.google.com/+PhilippeSawicki","https://linkedin.com/in/philippesawicki"]},{"@context":"http://schema.org","@type":"WebSite","name":"Philippe Sawicki","url":"http://philippesawicki.com/projects/WebGL-FFT/"}]</script><script defer="defer" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/threejs/r69/three.min.js"></script><script defer="defer" type="text/javascript" src="js/libraries.min.js?v=2015-06-28-22-31-25"></script><script defer="defer" type="text/javascript" src="js/main.min.js?v=2015-06-28-22-31-25"></script></body></html>

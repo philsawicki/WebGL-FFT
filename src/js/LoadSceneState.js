@@ -313,7 +313,7 @@ var LoadSceneState = (function () {
         // Create meshes from the loaded geometry:
         for (var i = 0; i < nbShells; i++) {
             // Create attributes for the mesh:
-            var attributes = { };
+            //var attributes = { };
 
             // Create uniforms for the mesh:
             var uniforms = {
@@ -327,13 +327,13 @@ var LoadSceneState = (function () {
 
             // Inline vertex & fragment shaders:
             var fs = require('fs');
-            var vertexShader   = fs.readFileSync(__dirname + './../shaders/vertexShader.vert', 'utf8');
-            var fragmentShader = fs.readFileSync(__dirname + './../shaders/fragmentShader.frag', 'utf8');
+            var vertexShader   = fs.readFileSync(__dirname + './../shaders/hair.vert', 'utf8');
+            var fragmentShader = fs.readFileSync(__dirname + './../shaders/hair.frag', 'utf8');
 
             // Create material options for the mesh:
             var material = new THREE.ShaderMaterial({
                 uniforms:       uniforms,
-                attributes:     attributes,
+                //attributes:     attributes,
                 vertexShader:   vertexShader,   // document.getElementById('vertexshader').textContent,
                 fragmentShader: fragmentShader, // document.getElementById('fragmentshader').textContent,
                 transparent: true,

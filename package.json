@@ -4,7 +4,9 @@
   "description": "WebGL-based audio visualisation",
   "main": "Audio.js",
   "scripts": {
-    "start": "http-server ./dist -p 8080"
+    "start": "http-server ./dist -p 8080",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [
     "webgl",
@@ -14,8 +16,8 @@
   ],
   "devDependencies": {
     "brfs": "^1.4.0",
-    "browserify": "^10.2.4",
-    "gulp": "^3.9.0",
+    "browserify": "^12.0.0",
+    "gulp": "^4.0.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-concat": "^2.6.0",
     "gulp-htmlmin": "^1.1.3",
@@ -31,5 +33,9 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "author": "Philippe Sawicki",
-  "license": "ISC"
+  "license": "ISC",
+  "snyk": true,
+  "dependencies": {
+    "snyk": "^1.105.0"
+  }
 }
